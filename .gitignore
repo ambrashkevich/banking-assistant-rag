@@ -8,6 +8,10 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+env/
+venv/
+ENV/
+.venv
 build/
 develop-eggs/
 dist/
@@ -25,6 +29,20 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Environment variables (секреты и пароли)
+.env
+
+# Data and Models (тяжелые файлы)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+*.sqlite3
+pgdata/
 
 # PyInstaller
 #   Usually these files are written by a python script from a template

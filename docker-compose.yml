@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  postgres_db:
+    image: pgvector/pgvector:pg16
+    container_name: bank_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: bank_rag_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: .
+    container_name: bank_api
+    command: uvicorn src.api:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgrespassword@postgres_db:5432/bank_rag_db
+      - POSTGRES_HOST=postgres_db
+    depends_on:
+      - postgres_db
+
+  ui:
+    build: .
+    container_name: bank_ui
+    command: streamlit run src/app.py --server.port 8501 --server.address 0.0.0.0
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://api:8000
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
